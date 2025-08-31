@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Particle {
   x: number;
@@ -13,12 +13,12 @@ interface Particle {
 
 // Detect mobile devices and performance level
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-const isLowPerformanceDevice = isMobile || navigator.hardwareConcurrency <= 4;
+const isLowPerformanceDevice = isMobile || (navigator.hardwareConcurrency || 4) <= 4;
 
 export const ParticleField = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const animationIdRef = useRef<number>();
+  const animationIdRef = useRef<number>(0);
   const mouseRef = useRef({ x: 0, y: 0 });
   const lastFrameTimeRef = useRef(0);
   const fpsTargetRef = useRef(60);

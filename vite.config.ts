@@ -13,14 +13,6 @@ export default defineConfig({
         },
       },
     },
-    // Enable compression
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
     // Target modern browsers for better performance
     target: 'es2015',
     // Enable asset compression
