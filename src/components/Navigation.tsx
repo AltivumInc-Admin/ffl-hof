@@ -3,6 +3,7 @@ import '../styles/Navigation.css';
 
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,7 +18,13 @@ export const Navigation = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      // Close mobile menu after navigation
+      setIsMobileMenuOpen(false);
     }
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -29,7 +36,21 @@ export const Navigation = () => {
           <span className="nav-brand-year">2025</span>
         </div>
         
-        <ul className="nav-menu">
+        {/* Mobile menu toggle */}
+        <button 
+          className="mobile-menu-toggle"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMobileMenuOpen}
+        >
+          <span className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+        
+        <ul className={`nav-menu ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
           <li className="nav-item">
             <button onClick={() => scrollToSection('hero')} className="nav-link">
               Home

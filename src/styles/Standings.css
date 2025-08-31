@@ -295,7 +295,95 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
+  .standings-container {
+    padding: 0 1rem;
+  }
+  
+  .standings-table-header {
+    display: none;
+  }
+  
+  .standings-table {
+    border-radius: 12px;
+  }
+  
+  .standings-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+    position: relative;
+    /* Increase touch target area */
+    min-height: 48px;
+  }
+  
+  .col-rank {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+  
+  .rank-number {
+    font-size: 1.25rem;
+  }
+  
+  .col-team {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .team-name {
+    font-size: 1rem;
+  }
+  
+  .team-abbr {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .col-manager,
+  .col-record,
+  .col-points {
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+  }
+  
+  .col-manager::before {
+    content: 'Manager';
+    color: rgba(212, 175, 55, 0.5);
+    font-weight: 600;
+  }
+  
+  .col-record::before {
+    content: 'Record';
+    color: rgba(212, 175, 55, 0.5);
+    font-weight: 600;
+  }
+  
+  .col-points:nth-of-type(5)::before {
+    content: 'Points For';
+    color: rgba(212, 175, 55, 0.5);
+    font-weight: 600;
+  }
+  
+  .col-points:nth-of-type(6)::before {
+    content: 'Points Against';
+    color: rgba(212, 175, 55, 0.5);
+    font-weight: 600;
+  }
+  
+  .legend {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
   .standings-table-header {
     display: none;
   }

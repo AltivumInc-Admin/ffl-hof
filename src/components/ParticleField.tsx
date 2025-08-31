@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface Particle {
   x: number;
@@ -11,11 +11,17 @@ interface Particle {
   baseVy: number;
 }
 
+// Detect mobile devices and performance level
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isLowPerformanceDevice = isMobile || navigator.hardwareConcurrency <= 4;
+
 export const ParticleField = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationIdRef = useRef<number>();
   const mouseRef = useRef({ x: 0, y: 0 });
+  const lastFrameTimeRef = useRef(0);
+  const fpsTargetRef = useRef(60);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -38,9 +44,13 @@ export const ParticleField = () => {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Initialize particles only once
+    // Initialize particles only once with device-specific optimizations
     if (particlesRef.current.length === 0) {
-      const particleCount = 50;
+      // Reduce particle count on mobile/low-performance devices
+      const particleCount = isLowPerformanceDevice ? 20 : 50;
+      // Set target FPS based on device capability
+      fpsTargetRef.current = isLowPerformanceDevice ? 30 : 60;
+      
       particlesRef.current = Array.from({ length: particleCount }, () => {
         const baseVx = (Math.random() - 0.5) * 0.3;
         const baseVy = (Math.random() - 0.5) * 0.3;
@@ -57,7 +67,18 @@ export const ParticleField = () => {
       });
     }
 
-    const animate = () => {
+    const animate = (currentTime: number = 0) => {
+      // Implement FPS limiting for better mobile performance
+      const fpsInterval = 1000 / fpsTargetRef.current;
+      const elapsed = currentTime - lastFrameTimeRef.current;
+
+      if (elapsed < fpsInterval) {
+        animationIdRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      lastFrameTimeRef.current = currentTime - (elapsed % fpsInterval);
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((particle, index) => {
@@ -97,20 +118,22 @@ export const ParticleField = () => {
         ctx.fillStyle = `rgba(212, 175, 55, ${particle.opacity})`;
         ctx.fill();
 
-        // Draw connections to nearby particles
-        for (let j = index + 1; j < particlesRef.current.length; j++) {
-          const otherParticle = particlesRef.current[j];
-          const dx = otherParticle.x - particle.x;
-          const dy = otherParticle.y - particle.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        // Draw connections to nearby particles (reduced on mobile for performance)
+        if (!isMobile) {
+          for (let j = index + 1; j < particlesRef.current.length; j++) {
+            const otherParticle = particlesRef.current[j];
+            const dx = otherParticle.x - particle.x;
+            const dy = otherParticle.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(otherParticle.x, otherParticle.y);
-            ctx.strokeStyle = `rgba(212, 175, 55, ${0.15 * (1 - distance / 100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+            if (distance < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particle.x, particle.y);
+              ctx.lineTo(otherParticle.x, otherParticle.y);
+              ctx.strokeStyle = `rgba(212, 175, 55, ${0.15 * (1 - distance / 100)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
           }
         }
       });

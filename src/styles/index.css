@@ -31,6 +31,11 @@ body {
   color: var(--white);
   overflow-x: hidden;
   line-height: 1.6;
+  /* Improve mobile scrolling performance */
+  -webkit-overflow-scrolling: touch;
+  /* Optimize mobile text rendering */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 #root {
@@ -68,6 +73,36 @@ button {
 ::selection {
   background: rgba(212, 175, 55, 0.3);
   color: var(--white);
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Focus management for better keyboard navigation */
+*:focus {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode improvements */
+@media (prefers-contrast: high) {
+  :root {
+    --gray-text: rgba(255, 255, 255, 0.9);
+    --gray-medium: rgba(255, 255, 255, 0.5);
+  }
 }
 
 .fade-in {

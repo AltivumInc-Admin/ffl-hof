@@ -207,6 +207,16 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Ensure minimum touch target size */
+  min-height: 48px;
+  min-width: 120px;
+  /* Improve touch feedback */
+  -webkit-tap-highlight-color: rgba(255, 215, 0, 0.3);
+  /* Prevent text selection on touch */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .cta-primary::before {
@@ -294,7 +304,54 @@
   color: rgba(212, 175, 55, 0.6);
 }
 
-@media (max-width: 768px) {
+/* Mobile-first responsive design */
+@media (max-width: 480px) {
+  .hero-content {
+    padding: 1rem;
+  }
+  
+  .hero-stats {
+    gap: 1.5rem;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-stat {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .hero-badge {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .badge-divider {
+    display: none;
+  }
+  
+  .cta-primary {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Reduce animation complexity on mobile */
+  .hero-gradient-1,
+  .hero-gradient-2 {
+    animation: none;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
   .hero-stats {
     gap: 2rem;
   }
