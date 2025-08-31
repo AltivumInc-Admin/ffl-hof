@@ -105,9 +105,15 @@
   line-height: 0.9;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
-  word-break: keep-all;
-  white-space: nowrap;
-  overflow-wrap: normal;
+}
+
+.hero-title.mobile-title {
+  background: linear-gradient(135deg, #FFD700 0%, #D4AF37 50%, #B8860B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fade-in-up 1s ease-out;
+  line-height: 1.1;
 }
 
 .hero-title .letter {
@@ -310,9 +316,13 @@
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 1.75rem !important;
-    white-space: normal !important;
-    line-height: 1.1 !important;
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .hero-title.mobile-title {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
   }
   
   .hero-content {
@@ -362,8 +372,12 @@
 
 @media (min-width: 481px) and (max-width: 768px) {
   .hero-title {
-    font-size: 2.5rem !important;
-    white-space: normal !important;
+    font-size: 3rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .hero-title.mobile-title {
+    font-size: 3rem !important;
     line-height: 1.1 !important;
   }
   

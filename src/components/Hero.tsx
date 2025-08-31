@@ -8,6 +8,15 @@ export const Hero = () => {
     const title = titleRef.current;
     if (!title) return;
 
+    // Skip letter animation on mobile
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+      // On mobile, just show the text without per-letter animation
+      title.classList.add('mobile-title');
+      return;
+    }
+
     const text = title.textContent || '';
     title.innerHTML = '';
     
