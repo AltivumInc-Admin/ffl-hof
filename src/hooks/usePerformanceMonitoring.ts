@@ -66,7 +66,7 @@ export const usePerformanceMonitoring = (enableLogging = false) => {
         });
         try {
           observer.observe({ entryTypes: ['largest-contentful-paint'] });
-        } catch (e) {
+        } catch {
           // LCP not supported
         }
       }
@@ -77,11 +77,13 @@ export const usePerformanceMonitoring = (enableLogging = false) => {
       if ('PerformanceObserver' in window) {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          entries.forEach((entry: any) => {
+          entries.forEach((entry: PerformanceEntry & { processingStart?: number; startTime: number }) => {
+            const processingStart = entry.processingStart || entry.startTime;
+            const fidValue = Math.round(processingStart - entry.startTime);
             const metric: PerformanceMetric = {
               name: 'FID',
-              value: Math.round(entry.processingStart - entry.startTime),
-              rating: getRating(entry.processingStart - entry.startTime, 'FID'),
+              value: fidValue,
+              rating: getRating(fidValue, 'FID'),
             };
             metrics.push(metric);
             if (enableLogging) {
@@ -91,7 +93,7 @@ export const usePerformanceMonitoring = (enableLogging = false) => {
         });
         try {
           observer.observe({ entryTypes: ['first-input'] });
-        } catch (e) {
+        } catch {
           // FID not supported
         }
       }
@@ -103,7 +105,7 @@ export const usePerformanceMonitoring = (enableLogging = false) => {
         let clsValue = 0;
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          entries.forEach((entry: any) => {
+          entries.forEach((entry: PerformanceEntry & { value: number; hadRecentInput?: boolean }) => {
             if (!entry.hadRecentInput) {
               clsValue += entry.value;
             }
@@ -126,7 +128,7 @@ export const usePerformanceMonitoring = (enableLogging = false) => {
         });
         try {
           observer.observe({ entryTypes: ['layout-shift'] });
-        } catch (e) {
+        } catch {
           // CLS not supported
         }
       }

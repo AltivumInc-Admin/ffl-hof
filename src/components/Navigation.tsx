@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/Navigation.css';
 
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,14 +54,35 @@ export const Navigation = () => {
         
         <ul className={`nav-menu ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
           <li className="nav-item">
-            <button onClick={() => scrollToSection('hero')} className="nav-link">
-              Home
-            </button>
+            {location.pathname === '/' ? (
+              <button onClick={() => scrollToSection('hero')} className="nav-link">
+                Home
+              </button>
+            ) : (
+              <Link to="/" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+                Home
+              </Link>
+            )}
           </li>
           <li className="nav-item">
-            <button onClick={() => scrollToSection('standings')} className="nav-link">
-              Teams
-            </button>
+            {location.pathname === '/' ? (
+              <button onClick={() => scrollToSection('standings')} className="nav-link">
+                Teams
+              </button>
+            ) : (
+              <Link to="/#standings" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+                Teams
+              </Link>
+            )}
+          </li>
+          <li className="nav-item">
+            <Link 
+              to="/schedule" 
+              className={`nav-link ${location.pathname === '/schedule' ? 'active' : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Schedule
+            </Link>
           </li>
         </ul>
       </div>

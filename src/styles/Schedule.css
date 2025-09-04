@@ -1,0 +1,436 @@
+.schedule-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 0;
+  background: #0A1120;
+  overflow: hidden;
+}
+
+.schedule-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 10s linear infinite;
+  opacity: 0.5;
+}
+
+.schedule-section::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 70% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 40%);
+  animation: float-gradient 30s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.schedule-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  width: 100%;
+}
+
+.schedule-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.schedule-label {
+  display: inline-block;
+  background: linear-gradient(90deg, #D4AF37, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.schedule-title {
+  font-size: 4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.schedule-subtitle {
+  font-size: 1.2rem;
+  color: #A0AEC0;
+  margin-bottom: 0;
+}
+
+/* Week Navigator */
+.week-navigator {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.week-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 15px;
+  padding: 0.75rem;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.week-button {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #A0AEC0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.week-button:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: #D4AF37;
+  transform: translateY(-1px);
+}
+
+.week-button.active {
+  background: linear-gradient(135deg, #D4AF37, #FFD700);
+  border-color: #D4AF37;
+  color: #0A1120;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* View Controls */
+.view-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.view-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 0.25rem;
+}
+
+.toggle-button {
+  background: transparent;
+  border: none;
+  color: #A0AEC0;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+  color: #D4AF37;
+}
+
+.toggle-button.active {
+  background: linear-gradient(135deg, #D4AF37, #FFD700);
+  color: #0A1120;
+  font-weight: 600;
+}
+
+/* Games Display */
+.games-container {
+  margin-bottom: 3rem;
+}
+
+.games-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.games-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.games-count {
+  color: #D4AF37;
+  font-size: 1rem;
+  font-weight: 500;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.games-grid.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.games-grid.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.game-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 15px;
+  padding: 1.5rem;
+  transition: all 0.4s ease;
+  animation: slide-up 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.game-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.team-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.team-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.team-location {
+  font-size: 0.8rem;
+  color: #A0AEC0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.team-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #D4AF37;
+  text-align: center;
+}
+
+.game-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 1rem;
+}
+
+.vs-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #A0AEC0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+}
+
+.game-status {
+  display: flex;
+  justify-content: center;
+}
+
+.status-completed {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-upcoming {
+  background: rgba(255, 255, 255, 0.1);
+  color: #A0AEC0;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Schedule Footer */
+.schedule-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.season-info {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-label {
+  font-size: 0.9rem;
+  color: #A0AEC0;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 1.2rem;
+  color: #D4AF37;
+  font-weight: 600;
+}
+
+/* Animations */
+@keyframes slide-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+@keyframes float-gradient {
+  0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
+  50% { transform: translate(10%, 10%) rotate(180deg); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .schedule-section {
+    padding: 6rem 0;
+  }
+
+  .schedule-container {
+    padding: 0 1.5rem;
+  }
+
+  .schedule-title {
+    font-size: 2.5rem;
+  }
+
+  .week-selector {
+    max-width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .week-selector::-webkit-scrollbar {
+    display: none;
+  }
+
+  .games-grid.grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-teams {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .team {
+    width: 100%;
+  }
+
+  .game-divider {
+    margin: 0;
+    transform: rotate(90deg);
+  }
+
+  .season-info {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .games-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-title {
+    font-size: 2rem;
+  }
+
+  .week-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .toggle-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .game-card {
+    padding: 1rem;
+  }
+}
