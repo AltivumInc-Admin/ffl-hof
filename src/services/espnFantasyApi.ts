@@ -35,11 +35,7 @@ export interface ESPNTeam {
   name: string;
   location: string;
   nickname: string;
-  owners: Array<{
-    displayName: string;
-    firstName: string;
-    lastName: string;
-  }>;
+  owners: string[]; // Array of owner IDs, not objects
   record: {
     overall: {
       wins: number;
@@ -66,6 +62,13 @@ export interface ESPNMatchup {
   winner?: 'HOME' | 'AWAY' | 'UNDECIDED';
 }
 
+export interface ESPNMember {
+  id: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
+}
+
 export interface ESPNLeague {
   id: number;
   scoringPeriodId: number;
@@ -75,6 +78,7 @@ export interface ESPNLeague {
   };
   teams: ESPNTeam[];
   schedule?: ESPNMatchup[];
+  members?: ESPNMember[];
 }
 
 
@@ -188,10 +192,15 @@ class ESPNFantasyAPIService {
   }
 
   async getTeamStandings(): Promise<ESPNTeam[]> {
-    const teams = await this.getTeamsWithRosters();
+    // Get both teams and league members for proper owner mapping
+    const url = this.buildUrl(['mTeam', 'mRoster']);
+    const league = await this.fetchWithCORS<ESPNLeague>(url);
+    
+    // Store members for owner mapping
+    this.leagueMembers = league.members || [];
     
     // Sort by wins, then by points for
-    return teams.sort((a, b) => {
+    return league.teams.sort((a, b) => {
       const aRecord = a.record.overall;
       const bRecord = b.record.overall;
       
@@ -202,6 +211,9 @@ class ESPNFantasyAPIService {
       return bRecord.pointsFor - aRecord.pointsFor;
     });
   }
+
+  // Store league members for owner mapping
+  private leagueMembers: ESPNMember[] = [];
 
   // Process roster entries into a more usable format
   processRoster(roster: ESPNRoster): ProcessedPlayer[] {
@@ -245,12 +257,27 @@ class ESPNFantasyAPIService {
     pointsAgainst: number;
   } {
     const record = espnTeam.record.overall;
-    const ownerName = espnTeam.owners[0]?.displayName || 
-                     `${espnTeam.owners[0]?.firstName} ${espnTeam.owners[0]?.lastName}` ||
-                     'Unknown Owner';
+    
+    // ESPN team name is in the 'name' field, not location + nickname
+    let teamName = espnTeam.name;
+    if (!teamName && espnTeam.location && espnTeam.nickname) {
+      teamName = `${espnTeam.location} ${espnTeam.nickname}`;
+    } else if (!teamName) {
+      teamName = `Team ${espnTeam.id}`;
+    }
+    
+    // Map owner ID to actual member name
+    let ownerName = 'Team Manager';
+    if (espnTeam.owners && espnTeam.owners.length > 0) {
+      const ownerId = espnTeam.owners[0];
+      const member = this.leagueMembers.find(m => m.id === ownerId);
+      if (member) {
+        ownerName = member.displayName || `${member.firstName} ${member.lastName}`;
+      }
+    }
 
     return {
-      teamName: `${espnTeam.location} ${espnTeam.nickname}`,
+      teamName,
       managerName: ownerName,
       wins: record.wins,
       losses: record.losses,
