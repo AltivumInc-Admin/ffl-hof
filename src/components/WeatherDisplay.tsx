@@ -16,6 +16,14 @@ export const WeatherDisplay = ({ proTeamId, playerName, currentWeek, onClose }: 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.classList.add('weather-modal-open');
+    return () => {
+      document.body.classList.remove('weather-modal-open');
+    };
+  }, []);
+
   useEffect(() => {
     const fetchWeather = async () => {
       setIsLoading(true);
