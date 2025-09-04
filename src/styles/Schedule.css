@@ -124,6 +124,29 @@
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
+.week-button.current-week {
+  position: relative;
+  border-color: #10B981;
+}
+
+.live-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #10B981;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 4px;
+  border-radius: 4px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
 /* View Controls */
 .view-controls {
   display: flex;

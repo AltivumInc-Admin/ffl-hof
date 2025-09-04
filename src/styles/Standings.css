@@ -424,3 +424,48 @@
     gap: 0.75rem;
   }
 }
+
+/* Live Data Indicators */
+.loading-indicator {
+  color: #D4AF37;
+  font-size: 0.9rem;
+}
+
+.error-indicator {
+  color: #EF4444;
+  font-size: 0.9rem;
+}
+
+.last-updated {
+  color: #10B981;
+  font-size: 0.9rem;
+}
+
+/* Standings Controls */
+.standings-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.refresh-button {
+  background: linear-gradient(135deg, #D4AF37, #FFD700);
+  border: none;
+  color: #0A1120;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refresh-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

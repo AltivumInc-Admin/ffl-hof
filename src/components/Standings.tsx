@@ -1,14 +1,26 @@
-import { teams } from '../data/leagueData';
+import { teams as staticTeams } from '../data/leagueData';
+import { useESPNData } from '../hooks/useESPNData';
 import '../styles/Standings.css';
 
 export const Standings = () => {
+  const { teams: liveTeams, isLoading, error, lastUpdated, refreshData } = useESPNData();
+  
+  // Use live data if available, fallback to static data
+  const teams = liveTeams.length > 0 ? liveTeams : staticTeams;
   return (
     <section id="standings" className="standings-section">
       <div className="standings-container">
         <div className="standings-header">
           <span className="standings-label">2025 Inaugural Season</span>
           <h2 className="standings-title">League Teams</h2>
-          <p className="standings-subtitle">Eight Contenders. One Champion.</p>
+          <p className="standings-subtitle">
+            Eight Contenders. One Champion.
+            {isLoading && <span className="loading-indicator"> • Updating...</span>}
+            {error && <span className="error-indicator"> • Using cached data</span>}
+            {lastUpdated && !isLoading && (
+              <span className="last-updated"> • Updated {lastUpdated.toLocaleTimeString()}</span>
+            )}
+          </p>
         </div>
 
         <div className="standings-table">
@@ -51,6 +63,16 @@ export const Standings = () => {
         </div>
 
         <div className="standings-footer">
+          <div className="standings-controls">
+            <button 
+              className="refresh-button"
+              onClick={refreshData}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Updating...' : 'Refresh Data'}
+            </button>
+          </div>
+          
           <div className="legend">
             <div className="legend-item">
               <span className="legend-dot playoff"></span>

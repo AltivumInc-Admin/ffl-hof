@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { scheduleData } from '../data/leagueData';
+import { useESPNData } from '../hooks/useESPNData';
 import '../styles/Schedule.css';
 
 export const Schedule = () => {
-  const [selectedWeek, setSelectedWeek] = useState(1);
+  const { currentWeek: liveCurrentWeek } = useESPNData();
+  const [selectedWeek, setSelectedWeek] = useState(liveCurrentWeek || 1);
+
+  // Update selected week when live current week changes
+  useEffect(() => {
+    if (liveCurrentWeek && liveCurrentWeek !== selectedWeek) {
+      setSelectedWeek(liveCurrentWeek);
+    }
+  }, [liveCurrentWeek, selectedWeek]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const currentWeekData = scheduleData.find(week => week.week === selectedWeek);
@@ -23,10 +32,11 @@ export const Schedule = () => {
             {scheduleData.map((week) => (
               <button
                 key={week.week}
-                className={`week-button ${selectedWeek === week.week ? 'active' : ''}`}
+                className={`week-button ${selectedWeek === week.week ? 'active' : ''} ${week.week === liveCurrentWeek ? 'current-week' : ''}`}
                 onClick={() => setSelectedWeek(week.week)}
               >
                 Week {week.week}
+                {week.week === liveCurrentWeek && <span className="live-indicator">LIVE</span>}
               </button>
             ))}
           </div>
