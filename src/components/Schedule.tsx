@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { scheduleData } from '../data/leagueData';
 import { useESPNData } from '../hooks/useESPNData';
 import { RosterPreview } from './RosterPreview';
+import { ESPNDebug } from './ESPNDebug';
 import '../styles/Schedule.css';
 
 export const Schedule = () => {
@@ -193,6 +194,7 @@ export const Schedule = () => {
           </div>
         </div>
       </div>
+      <ESPNDebug />
     </section>
   );
 };

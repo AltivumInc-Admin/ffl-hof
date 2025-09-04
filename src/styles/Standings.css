@@ -469,3 +469,50 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Roster expansion in standings */
+.col-actions {
+  flex: 0 0 80px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #D4AF37;
+}
+
+.roster-indicator {
+  display: block;
+  font-size: 0.7rem;
+  color: #A0AEC0;
+  margin-top: 0.25rem;
+}
+
+.view-roster-btn {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #D4AF37;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.view-roster-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.standings-row.expanded {
+  background: rgba(212, 175, 55, 0.05);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.team-roster-expanded {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid #D4AF37;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+}
