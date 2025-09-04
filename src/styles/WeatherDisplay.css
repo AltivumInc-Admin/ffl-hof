@@ -261,10 +261,19 @@
 /* Responsive Design */
 
 @media (max-width: 480px) {
+  .weather-overlay {
+    padding: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+  
   .weather-modal {
-    margin: 16px;
+    margin: 0;
     max-width: none;
-    width: calc(100% - 32px);
+    width: 100%;
+    max-width: calc(100vw - 32px);
+    position: relative;
+    transform: none;
   }
   
   .weather-main {
@@ -279,5 +288,24 @@
   
   .weather-extra {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Additional mobile safety for very small screens */
+@media (max-width: 360px) {
+  .weather-overlay {
+    padding: 12px;
+  }
+  
+  .weather-modal {
+    max-width: calc(100vw - 24px);
+  }
+  
+  .weather-header {
+    padding: 16px;
+  }
+  
+  .weather-content {
+    padding: 16px;
   }
 }
