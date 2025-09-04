@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { espnApi } from '../services/espnFantasyApi';
-import type { ESPNTeam, ESPNMatchup } from '../services/espnFantasyApi';
+import type { ESPNTeam, ESPNMatchup, ProcessedPlayer } from '../services/espnFantasyApi';
 import type { Team } from '../data/leagueData';
 
+export interface TeamWithRoster extends Team {
+  espnId: number;
+  roster?: ProcessedPlayer[];
+  startingLineup?: ProcessedPlayer[];
+}
+
 interface ESPNDataState {
-  teams: Team[];
+  teams: TeamWithRoster[];
   matchups: ESPNMatchup[];
   currentWeek: number;
   isLoading: boolean;
@@ -33,7 +39,7 @@ export const useESPNData = (enableLiveData = true) => {
     lastUpdated: null,
   });
 
-  const mapESPNTeamsToLocal = useCallback((espnTeams: ESPNTeam[]): Team[] => {
+  const mapESPNTeamsToLocal = useCallback((espnTeams: ESPNTeam[]): TeamWithRoster[] => {
     return espnTeams.map((espnTeam, index) => {
       const localData = espnApi.mapESPNTeamToLocal(espnTeam);
       
@@ -42,6 +48,10 @@ export const useESPNData = (enableLiveData = true) => {
         localData.teamName.toLowerCase().includes(localName.toLowerCase().replace(/['']/g, '')) ||
         localName.toLowerCase().includes(localData.teamName.toLowerCase())
       );
+
+      // Process roster if available
+      const roster = espnTeam.roster ? espnApi.processRoster(espnTeam.roster) : undefined;
+      const startingLineup = espnTeam.roster ? espnApi.getStartingLineup(espnTeam.roster) : undefined;
 
       return {
         rank: index + 1,
@@ -53,6 +63,9 @@ export const useESPNData = (enableLiveData = true) => {
         ties: localData.ties,
         pointsFor: localData.pointsFor,
         pointsAgainst: localData.pointsAgainst,
+        espnId: espnTeam.id,
+        roster,
+        startingLineup,
       };
     });
   }, []);

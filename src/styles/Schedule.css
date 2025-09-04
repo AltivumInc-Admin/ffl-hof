@@ -308,9 +308,66 @@
   border-radius: 20px;
 }
 
+.roster-count {
+  font-size: 0.7rem;
+  color: #A0AEC0;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.game-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .game-status {
   display: flex;
   justify-content: center;
+}
+
+.roster-toggle {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #D4AF37;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.roster-toggle:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+}
+
+.game-card.expanded {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.game-rosters {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.roster-matchup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.roster-section {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(212, 175, 55, 0.1);
 }
 
 .status-completed {
@@ -455,5 +512,24 @@
 
   .game-card {
     padding: 1rem;
+  }
+
+  .roster-matchup {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .game-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .roster-toggle {
+    width: 100%;
+    text-align: center;
+  }
+
+  .roster-section {
+    padding: 0.75rem;
   }
 }

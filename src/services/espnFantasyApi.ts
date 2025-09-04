@@ -4,6 +4,31 @@ const ESPN_API_BASE = 'https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl';
 const LEAGUE_ID = '325346816';
 const SEASON = '2025';
 
+export interface ESPNPlayer {
+  id: number;
+  fullName: string;
+  firstName: string;
+  lastName: string;
+  defaultPositionId: number;
+  eligibleSlots: number[];
+  proTeamId: number;
+  injured: boolean;
+  injuryStatus: string;
+}
+
+export interface ESPNRosterEntry {
+  playerId: number;
+  lineupSlotId: number;
+  acquisitionType: string;
+  playerPoolEntry: {
+    player: ESPNPlayer;
+  };
+}
+
+export interface ESPNRoster {
+  entries: ESPNRosterEntry[];
+}
+
 export interface ESPNTeam {
   id: number;
   abbrev: string;
@@ -24,18 +49,7 @@ export interface ESPNTeam {
       pointsAgainst: number;
     };
   };
-  roster?: {
-    entries: Array<{
-      playerId: number;
-      lineupSlotId: number;
-      playerPoolEntry: {
-        player: {
-          fullName: string;
-          defaultPositionId: number;
-        };
-      };
-    }>;
-  };
+  roster?: ESPNRoster;
 }
 
 export interface ESPNMatchup {
@@ -61,6 +75,58 @@ export interface ESPNLeague {
   };
   teams: ESPNTeam[];
   schedule?: ESPNMatchup[];
+}
+
+
+// ESPN Position ID mappings
+export const ESPN_POSITION_MAP: Record<number, string> = {
+  0: 'QB',
+  1: 'TQB', 
+  2: 'RB',
+  3: 'RB/WR',
+  4: 'WR',
+  5: 'WR/TE',
+  6: 'TE',
+  7: 'OP',
+  8: 'DT',
+  9: 'DE',
+  10: 'LB',
+  11: 'DL',
+  12: 'CB',
+  13: 'S',
+  14: 'DB',
+  15: 'DP',
+  16: 'D/ST',
+  17: 'K',
+  18: 'P',
+  19: 'HC',
+  20: 'BE',
+  21: 'IR',
+  22: 'FA',
+  23: 'FLEX'
+};
+
+// Lineup slot mappings (different from position IDs)
+export const ESPN_LINEUP_SLOT_MAP: Record<number, string> = {
+  0: 'QB',
+  2: 'RB', 
+  4: 'WR',
+  6: 'TE',
+  16: 'D/ST',
+  17: 'K',
+  20: 'BE', // Bench
+  21: 'IR', // Injured Reserve
+  23: 'FLEX'
+};
+
+export interface ProcessedPlayer {
+  id: number;
+  name: string;
+  position: string;
+  lineupSlot: string;
+  isStarter: boolean;
+  isInjured: boolean;
+  injuryStatus: string;
 }
 
 class ESPNFantasyAPIService {
@@ -135,6 +201,37 @@ class ESPNFantasyAPIService {
       
       return bRecord.pointsFor - aRecord.pointsFor;
     });
+  }
+
+  // Process roster entries into a more usable format
+  processRoster(roster: ESPNRoster): ProcessedPlayer[] {
+    if (!roster?.entries) return [];
+
+    return roster.entries.map(entry => {
+      const player = entry.playerPoolEntry.player;
+      const lineupSlot = ESPN_LINEUP_SLOT_MAP[entry.lineupSlotId] || 'BE';
+      const position = ESPN_POSITION_MAP[player.defaultPositionId] || 'Unknown';
+      
+      return {
+        id: player.id,
+        name: player.fullName,
+        position,
+        lineupSlot,
+        isStarter: entry.lineupSlotId !== 20 && entry.lineupSlotId !== 21, // Not bench or IR
+        isInjured: player.injured,
+        injuryStatus: player.injuryStatus,
+      };
+    });
+  }
+
+  // Get starting lineup for a team
+  getStartingLineup(roster: ESPNRoster): ProcessedPlayer[] {
+    return this.processRoster(roster).filter(player => player.isStarter);
+  }
+
+  // Get bench players for a team
+  getBenchPlayers(roster: ESPNRoster): ProcessedPlayer[] {
+    return this.processRoster(roster).filter(player => !player.isStarter);
   }
 
   // Helper method to map ESPN team to our Team interface
