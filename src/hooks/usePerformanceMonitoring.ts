@@ -105,9 +105,10 @@ export const usePerformanceMonitoring = (enableLogging = false) => {
         let clsValue = 0;
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          entries.forEach((entry: PerformanceEntry & { value: number; hadRecentInput?: boolean }) => {
-            if (!entry.hadRecentInput) {
-              clsValue += entry.value;
+          entries.forEach((entry) => {
+            const layoutShiftEntry = entry as PerformanceEntry & { value: number; hadRecentInput?: boolean };
+            if (!layoutShiftEntry.hadRecentInput) {
+              clsValue += layoutShiftEntry.value;
             }
           });
           const metric: PerformanceMetric = {
