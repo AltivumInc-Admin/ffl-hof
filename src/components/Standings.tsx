@@ -5,7 +5,7 @@ import { RosterPreview } from './RosterPreview';
 import '../styles/Standings.css';
 
 export const Standings = () => {
-  const { teams: liveTeams, isLoading, error, lastUpdated, refreshData } = useESPNData();
+  const { teams: liveTeams, isLoading, error, lastUpdated, refreshData, currentWeek } = useESPNData();
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
   
   // Use live data if available, fallback to static data
@@ -92,6 +92,7 @@ export const Standings = () => {
                         players={teamWithRoster.startingLineup}
                         teamName={team.teamName}
                         maxPlayers={12}
+                        currentWeek={currentWeek}
                       />
                     </div>
                   )}

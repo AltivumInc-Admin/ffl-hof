@@ -131,6 +131,7 @@ export interface ProcessedPlayer {
   isStarter: boolean;
   isInjured: boolean;
   injuryStatus: string;
+  proTeamId: number;
 }
 
 class ESPNFantasyAPIService {
@@ -232,6 +233,7 @@ class ESPNFantasyAPIService {
         isStarter: entry.lineupSlotId !== 20 && entry.lineupSlotId !== 21, // Not bench or IR
         isInjured: player.injured,
         injuryStatus: player.injuryStatus,
+        proTeamId: player.proTeamId,
       };
     });
   }

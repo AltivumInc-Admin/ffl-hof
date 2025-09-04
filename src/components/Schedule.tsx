@@ -16,17 +16,36 @@ export const Schedule = () => {
       setSelectedWeek(liveCurrentWeek);
     }
   }, [liveCurrentWeek, selectedWeek]);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const currentWeekData = scheduleData.find(week => week.week === selectedWeek);
 
-  // Helper function to find team roster by name
+  // Helper function to find team roster by name with exact matching
   const getTeamRoster = (teamName: string) => {
-    return teamsWithRosters.find(team => 
-      team.teamName === teamName || 
-      team.teamName.toLowerCase().includes(teamName.toLowerCase()) ||
-      teamName.toLowerCase().includes(team.teamName.toLowerCase())
-    );
+    // First try exact match
+    let match = teamsWithRosters.find(team => team.teamName === teamName);
+    
+    if (!match) {
+      // Try case-insensitive exact match
+      match = teamsWithRosters.find(team => 
+        team.teamName.toLowerCase() === teamName.toLowerCase()
+      );
+    }
+    
+    if (!match) {
+      // Try partial matching (contains)
+      match = teamsWithRosters.find(team => 
+        team.teamName.toLowerCase().includes(teamName.toLowerCase()) ||
+        teamName.toLowerCase().includes(team.teamName.toLowerCase())
+      );
+    }
+    
+    // Debug: log mismatches
+    if (!match) {
+      console.log(`No roster found for team: "${teamName}". Available teams:`, 
+        teamsWithRosters.map(t => t.teamName));
+    }
+    
+    return match;
   };
 
   const toggleGameExpanded = (gameId: string) => {
@@ -58,36 +77,29 @@ export const Schedule = () => {
           </div>
         </div>
 
-        {/* View Mode Toggle */}
-        <div className="view-controls">
-          <div className="view-toggle">
-            <button
-              className={`toggle-button ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-            >
-              Grid View
-            </button>
-            <button
-              className={`toggle-button ${viewMode === 'list' ? 'active' : ''}`}
-              onClick={() => setViewMode('list')}
-            >
-              List View
-            </button>
-          </div>
-        </div>
 
         {/* Games Display */}
-        <div className={`games-container ${viewMode}`}>
+        <div className="games-container list">
           <div className="games-header">
             <h3 className="games-title">Week {selectedWeek} Matchups</h3>
             <span className="games-count">{currentWeekData?.games.length || 0} Games</span>
           </div>
 
-          <div className={`games-grid ${viewMode}`}>
+          <div className="games-grid list">
             {currentWeekData?.games.map((game, index) => {
               const homeTeamRoster = getTeamRoster(game.homeTeam);
               const awayTeamRoster = getTeamRoster(game.awayTeam);
               const isExpanded = expandedGame === game.id;
+              
+              // Debug roster data when expanded
+              if (isExpanded) {
+                console.log(`Game ${game.id} expanded:`, {
+                  homeTeam: game.homeTeam,
+                  awayTeam: game.awayTeam,
+                  homeRoster: homeTeamRoster?.startingLineup?.length || 0,
+                  awayRoster: awayTeamRoster?.startingLineup?.length || 0,
+                });
+              }
               
               return (
                 <div 
@@ -153,25 +165,42 @@ export const Schedule = () => {
                   {isExpanded && (
                     <div className="game-rosters">
                       <div className="roster-matchup">
-                        {awayTeamRoster?.startingLineup && (
-                          <div className="roster-section">
-                            <RosterPreview 
-                              players={awayTeamRoster.startingLineup}
-                              teamName={`${game.awayTeam} (Away)`}
-                              maxPlayers={9}
-                            />
-                          </div>
-                        )}
-                        
-                        {homeTeamRoster?.startingLineup && (
-                          <div className="roster-section">
-                            <RosterPreview 
-                              players={homeTeamRoster.startingLineup}
-                              teamName={`${game.homeTeam} (Home)`}
-                              maxPlayers={9}
-                            />
-                          </div>
-                        )}
+                        {(() => {
+                          const validAwayPlayers = awayTeamRoster?.startingLineup?.filter(p => p.name && p.name.trim() !== '') || [];
+                          const validHomePlayers = homeTeamRoster?.startingLineup?.filter(p => p.name && p.name.trim() !== '') || [];
+                          
+                          return (
+                            <>
+                              {validAwayPlayers.length > 0 && (
+                                <div className="roster-section">
+                                  <RosterPreview 
+                                    players={validAwayPlayers}
+                                    teamName={`${game.awayTeam} (Away)`}
+                                    maxPlayers={9}
+                                    currentWeek={selectedWeek}
+                                  />
+                                </div>
+                              )}
+                              
+                              {validHomePlayers.length > 0 && (
+                                <div className="roster-section">
+                                  <RosterPreview 
+                                    players={validHomePlayers}
+                                    teamName={`${game.homeTeam} (Home)`}
+                                    maxPlayers={9}
+                                    currentWeek={selectedWeek}
+                                  />
+                                </div>
+                              )}
+                              
+                              {validAwayPlayers.length === 0 && validHomePlayers.length === 0 && (
+                                <div className="roster-unavailable">
+                                  <p>Roster data unavailable for this matchup</p>
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
                   )}

@@ -1,4 +1,5 @@
 import type { ProcessedPlayer } from '../services/espnFantasyApi';
+import { WeatherButton } from './WeatherDisplay';
 import '../styles/RosterPreview.css';
 
 interface RosterPreviewProps {
@@ -6,9 +7,10 @@ interface RosterPreviewProps {
   teamName: string;
   showTitle?: boolean;
   maxPlayers?: number;
+  currentWeek?: number;
 }
 
-export const RosterPreview = ({ players, teamName, showTitle = true, maxPlayers = 6 }: RosterPreviewProps) => {
+export const RosterPreview = ({ players, teamName, showTitle = true, maxPlayers = 6, currentWeek = 1 }: RosterPreviewProps) => {
   const displayPlayers = players.slice(0, maxPlayers);
   const remainingCount = players.length - maxPlayers;
 
@@ -48,6 +50,15 @@ export const RosterPreview = ({ players, teamName, showTitle = true, maxPlayers 
               {player.isInjured && (
                 <div className="injury-indicator">{player.injuryStatus}</div>
               )}
+            </div>
+            <div className="player-weather">
+              <WeatherButton
+                proTeamId={player.proTeamId}
+                playerName={player.name}
+                currentWeek={currentWeek}
+                size="small"
+                className="roster-weather-btn"
+              />
             </div>
           </div>
         ))}
