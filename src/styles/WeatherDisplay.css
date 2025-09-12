@@ -5,6 +5,7 @@ body.weather-modal-open {
   overflow: hidden;
 }
 
+/* Modal overlay - simple and effective */
 .weather-overlay {
   position: fixed;
   top: 0;
@@ -17,9 +18,9 @@ body.weather-modal-open {
   justify-content: center;
   z-index: 9999;
   backdrop-filter: blur(4px);
-  overflow: auto;
 }
 
+/* Modal content - centered and responsive */
 .weather-modal {
   background: #1A202C;
   border-radius: 16px;
@@ -30,6 +31,7 @@ body.weather-modal-open {
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   animation: weatherModalSlide 0.3s ease-out;
+  margin: 20px;
 }
 
 @keyframes weatherModalSlide {
@@ -264,18 +266,13 @@ body.weather-modal-open {
   transform: scale(0.95);
 }
 
-/* Responsive Design */
+/* Mobile Responsive - Keep It Simple */
 
 @media (max-width: 480px) {
-  .weather-overlay {
-    padding: 16px;
-  }
-  
   .weather-modal {
-    margin: 0;
-    width: calc(100% - 32px);
-    max-width: none;
-    max-height: 90vh;
+    width: 95%;
+    margin: 10px;
+    max-height: 85vh;
   }
   
   .weather-main {
@@ -290,24 +287,5 @@ body.weather-modal-open {
   
   .weather-extra {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Additional mobile safety for very small screens */
-@media (max-width: 360px) {
-  .weather-overlay {
-    padding: 12px;
-  }
-  
-  .weather-modal {
-    width: calc(100% - 24px);
-  }
-  
-  .weather-header {
-    padding: 16px;
-  }
-  
-  .weather-content {
-    padding: 16px;
   }
 }

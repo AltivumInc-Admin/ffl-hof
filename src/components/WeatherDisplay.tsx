@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import type { WeatherData } from '../services/weatherService';
 import { weatherService } from '../services/weatherService';
 import { getNFLTeam, getGameLocation } from '../services/nflTeamService';
@@ -16,11 +17,21 @@ export const WeatherDisplay = ({ proTeamId, playerName, currentWeek, onClose }: 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Prevent body scroll when modal is open
+  // Manage body scroll when modal is open/closed
   useEffect(() => {
+    // Store current scroll position
+    const scrollY = window.scrollY;
+    
+    // Add class to prevent body scroll
     document.body.classList.add('weather-modal-open');
+    
+    // Cleanup function
     return () => {
+      // Remove class to restore scroll
       document.body.classList.remove('weather-modal-open');
+      
+      // Restore scroll position
+      window.scrollTo(0, scrollY);
     };
   }, []);
 
@@ -66,7 +77,7 @@ export const WeatherDisplay = ({ proTeamId, playerName, currentWeek, onClose }: 
     }
   };
 
-  return (
+  return createPortal(
     <div className="weather-overlay" onClick={handleOverlayClick}>
       <div className="weather-modal">
         <div className="weather-header">
@@ -137,7 +148,8 @@ export const WeatherDisplay = ({ proTeamId, playerName, currentWeek, onClose }: 
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
